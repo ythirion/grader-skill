@@ -91,13 +91,29 @@ M1 - EADL/
 
 ## Oral de contre-évaluation
 
+Un rendu peut être juste sans que son auteur·e le comprenne, par exemple s'il a été généré par une IA. L'oral de contre-évaluation sert à vérifier que l'étudiant·e **maîtrise ce qu'il ou elle a rendu**. Il ne cherche pas à prouver qu'une IA a été utilisée : celui ou celle qui sait expliquer et défendre son code garde sa note, quel que soit l'outil utilisé.
+
+**Déroulé** (individuel même pour un binôme, IDE ouvert **sans IA active**) :
+
+1. **Questions sur le code rendu**, préparées par Claude à partir des fichiers, des lignes et des commits du rendu, réparties sur trois axes :
+   - **Vocabulaire** : expliquer les termes et concepts qu'il ou elle a écrits
+   - **Démarche** : raconter l'ordre réel du travail, confronté à l'historique git
+   - **Consignes** : montrer où le rendu répond à l'énoncé
+2. **Exercice en direct** (environ 5 min) sur son propre code, souvent : écrire le test qui met en évidence un bug qu'il ou elle a signalé.
+3. **Auto-évaluation** : l'étudiant·e se positionne sur chaque axe et justifie son choix.
+4. **Confrontation** : le correcteur compare avec sa propre lecture. Si elles diffèrent, on en discute et on retient un niveau.
+
+**Effet sur la note** : chaque axe vaut *Maîtrise* (100 %), *L'essentiel* (75 %), *Hésite* (50 %) ou *Ne sait pas* (0 %).
+
+> **Note conservée = note correcteur × moyenne des trois axes**
+> Exemple : 16/20 avec Maîtrise, L'essentiel, Hésite → 16 × 75 % = **12/20**
+
 ![Page des oraux](docs/img/oral.webp)
 
 - **Prévu** automatiquement si le score d'indices IA est **≥ 3/5**
 - **Déclenchable** par le correcteur pour n'importe quel rendu (rapport, synthèse ou page des oraux)
-- Questions préparées sur le code rendu : réponse attendue, signal d'alerte, exercice en direct
-- Trois axes évalués (vocabulaire, démarche, consignes) : auto-évaluation, lecture du correcteur, niveau retenu
-- **Note conservée = note correcteur × moyenne des trois axes**, reportée dans le rapport, la synthèse, les PDF et `notes.csv`
+- Chaque question est fournie avec la **réponse attendue** et le **signal d'alerte** qui doit faire baisser le niveau
+- Saisie dans `oral.html` pendant l'oral ; une fois l'oral coché « réalisé », la note conservée remplace la note dans le rapport, la synthèse, les PDF et `notes.csv`
 - `oral.html` est réservée au formateur : liée depuis la synthèse uniquement, jamais exportée
 
 ## Scripts
