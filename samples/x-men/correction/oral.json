@@ -1,0 +1,79 @@
+{
+  "seuil": 3,
+  "rendus": {
+    "Scott - Jean - Kurt": {
+      "a_creuser": [
+        "La copie de travail non commitée : <code>coda/scott/ElfIdentifierValidator.java</code> et <code>coda/jean/EID.java</code> se déclarent générés par ChatGPT et Copilot, et le code TDD commité y est supprimé. Qui a écrit quoi, et pourquoi ce changement ?",
+        "<code>coda/ororo/EID.java</code> (Optional, enum, <code>equals</code> façon record) tranche avec le style du code TDD commité : chacun sait-il l'expliquer ligne à ligne ?",
+        "La clé de contrôle : un seul exemple valide (<code>12345673</code>), faux, a guidé toute l'implémentation de <code>reste % 97 + 1</code>."
+      ],
+      "axes": {
+        "vocabulaire": [
+          {
+            "question": "Dans <code>Eid.java</code>, que veut dire « complément à 97 » ? Calcule au tableau la clé de <code>198007</code>.",
+            "attendu": "Clé = 97 − (198007 mod 97) = 97 − 30 = 67 : l'EID <code>19800767</code> de l'énoncé est valide. La clé va de 01 à 97.",
+            "alerte": "Répète « modulo 97 » sans savoir le poser, ou retrouve <code>reste % 97 + 1</code> sans voir que ce n'est pas un complément."
+          },
+          {
+            "question": "<code>EidTests.java</code> utilise <code>@NullAndEmptySource</code> et <code>Named.of(…)</code> : à quoi servent-ils, et que verrait-on dans le rapport de test sans <code>Named</code> ?",
+            "attendu": "Test paramétré alimenté avec <code>null</code> et <code>\"\"</code> ; <code>Named</code> donne un libellé lisible à chaque cas (« invalid serial number ») au lieu de la valeur brute.",
+            "alerte": "Ne sait pas ce qu'est un test paramétré ou confond <code>Named</code> avec un nom de méthode."
+          },
+          {
+            "question": "Tu as ajouté Pitest : qu'est-ce qu'un mutant « survivant », et qu'aurait-il dû te dire sur la clé ?",
+            "attendu": "Une modification du code que les tests ne détectent pas. Remplacer <code>+ 1</code> ou la formule de la clé aurait pu survivre avec un seul exemple valide : signe d'un manque de triangulation.",
+            "alerte": "Ne sait pas lire un rapport Pitest ou dit l'avoir ajouté « parce que c'était conseillé »."
+          },
+          {
+            "question": "Dans l'expression <code>(?!000)[0-9]{3}</code> de <code>Eid.java:9</code>, que fait <code>(?!000)</code> ? Et quelle différence entre <code>find()</code> et <code>matches()</code> ?",
+            "attendu": "Lookahead négatif : refuse la série 000. <code>find()</code> cherche un morceau qui correspond, <code>matches()</code> exige que toute la chaîne corresponde : avec <code>find()</code>, une entrée préfixée par une lettre peut passer.",
+            "alerte": "Lit la regex sans pouvoir l'expliquer, ou ne voit pas le risque de <code>find()</code>."
+          }
+        ],
+        "demarche": [
+          {
+            "question": "Raconte-moi vos 32 commits de 10h39 à 12h28 : comment se répartissaient recherche, code et rotation du mob, et quel était ton rôle ?",
+            "attendu": "Récit cohérent avec l'historique : préfixes <code>red</code> / <code>green</code> / <code>refactor</code>, un comportement par commit, rotation régulière, recherche en parallèle (mentionnée dans la rétro).",
+            "alerte": "Récit vague, ou incompatible avec l'historique (par exemple « on a tout codé puis commité »)."
+          },
+          {
+            "question": "D'où vient l'exemple <code>12345673</code> du premier test nominal (<code>EidTests.java:19</code>) ? Comment l'as-tu vérifié ?",
+            "attendu": "Reconnaît qu'il a été inventé ou calculé avec la formule fausse, et qu'il aurait fallu partir de l'exemple de l'énoncé (<code>19800767</code>) et trianguler avec deux ou trois autres EID calculés à la main.",
+            "alerte": "Ne se souvient pas de l'origine, ou maintient que <code>12345673</code> est valide."
+          },
+          {
+            "question": "Le commit <code>1a369ff</code> s'appelle « redgreenrefac » : que s'est-il passé à ce moment-là, et où en étais-tu ?",
+            "attendu": "Explique honnêtement l'écart au cycle (fatigue, gros pas, oubli) et ce que ça change pour la relecture.",
+            "alerte": "Ne reconnaît pas le commit ou ne sait pas ce qu'il contient."
+          },
+          {
+            "question": "Après le rendu, la copie de travail supprime le code TDD et ajoute trois versions individuelles, dont deux annotées « AI Generated » / « Copilot ». Pourquoi ? Laquelle est la tienne ?",
+            "attendu": "Explication assumée (exploration personnelle après la séance, comparaison avec une IA…) et capacité à dire ce que ces versions apportent ou non par rapport au code commité.",
+            "alerte": "Ne sait pas d'où viennent ces fichiers, ou ne peut pas expliquer le code de sa propre version."
+          }
+        ],
+        "consignes": [
+          {
+            "question": "Que demandait l'énoncé pour la clé de contrôle ? Montre-moi la ligne de <code>Eid.java</code> qui y répond.",
+            "attendu": "Clé = complément à 97 du nombre formé par les six premiers chiffres, de 01 à 97. Reconnaît que la ligne avec <code>remainder % 97 + 1</code> n'y répond pas.",
+            "alerte": "Ne sait pas citer la règle ou défend la formule actuelle."
+          },
+          {
+            "question": "Cite les règles EID (sexe, année, série, clé, structure) et, pour chacune, le test de <code>EidTests.java</code> qui la couvre.",
+            "attendu": "Sexe 1-3, année 00-99, série 001-999, clé 01-97, 8 chiffres ; associe chaque règle à un cas nommé (lignes 22-33) et note qu'il manque des cas valides.",
+            "alerte": "Oublie des règles, ou ne retrouve pas les tests correspondants."
+          },
+          {
+            "question": "La consigne demandait une rétrospective avec au moins une action d'amélioration. Qu'aurais-tu dû écrire à la place de « rien » ?",
+            "attendu": "Une action concrète, par exemple : « trianguler chaque formule avec trois exemples calculés à la main, dont un de l'énoncé ».",
+            "alerte": "Ne voit toujours rien à améliorer malgré le bug de la clé."
+          }
+        ]
+      },
+      "exercice": {
+        "consigne": "Dans l'IDE, sans IA : écris le test rouge qui montre que <code>19800767</code> (exemple de l'énoncé) est refusé, puis corrige la clé et fais passer les tests. Ajoute un deuxième exemple valide calculé à la main.",
+        "attendu": "Test <code>assertTrue(Eid.isValid(\"19800767\"))</code> rouge, correction en <code>97 - remainder % 97</code>, mise à jour de <code>12345673</code> en <code>12345625</code>, tests verts en moins de 5 minutes."
+      }
+    }
+  }
+}

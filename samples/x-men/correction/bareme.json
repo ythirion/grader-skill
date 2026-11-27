@@ -1,0 +1,34 @@
+{
+  "titre": "Kata EID — TDD",
+  "source": "Bareme.md",
+  "sur": 20,
+  "plafonner": true,
+  "sections": [
+    {"id": "tdd", "titre": "Pratique TDD", "criteres": [
+      {"id": "tdd-cycle", "titre": "Cycle Red / Green / Refactor respecté", "sur": 3, "description": "Chaque fonctionnalité est précédée d'un test qui échoue, puis rendue vert, puis refactorisée"},
+      {"id": "tdd-test-first", "titre": "Tests écrits avant le code de production", "sur": 2, "description": "Aucun code de production n'existe sans test préalable"},
+      {"id": "tdd-baby-steps", "titre": "Petits pas (baby steps)", "sur": 2, "description": "L'historique git montre une progression fine et régulière avec les préfixes red: / green: / refactor:"},
+      {"id": "tdd-canon", "titre": "Utilisation du Canon TDD", "sur": 1, "description": "Le Canon TDD est appliqué de façon visible (triangulation, transformation, ...)"}
+    ]},
+    {"id": "tests", "titre": "Qualité des tests", "criteres": [
+      {"id": "tests-nominaux", "titre": "Couverture des cas nominaux", "sur": 2, "description": "Les cas heureux de chaque règle EID sont testés"},
+      {"id": "tests-limites", "titre": "Couverture des cas limites et erreurs", "sur": 2, "description": "Valeurs invalides, cas limites"},
+      {"id": "tests-lisibilite", "titre": "Lisibilité et intention des tests", "sur": 1, "description": "Les noms de tests expriment clairement le comportement attendu"}
+    ]},
+    {"id": "regles", "titre": "Implémentation des règles EID", "criteres": [
+      {"id": "regle-sexe", "titre": "Validation du sexe (position 1)", "sur": 0.5, "description": "Valeurs 1, 2, 3 uniquement"},
+      {"id": "regle-annee", "titre": "Validation de l'année (positions 2-3)", "sur": 0.5, "description": "De 00 à 99"},
+      {"id": "regle-serie", "titre": "Validation du numéro de série (positions 4-6)", "sur": 0.5, "description": "De 001 à 999"},
+      {"id": "regle-cle", "titre": "Calcul et validation de la clé de contrôle (positions 7-8)", "sur": 1.5, "description": "Complément à 97, modulo 97, valeurs de 01 à 97"},
+      {"id": "regle-structure", "titre": "Validation de la structure globale (longueur, format)", "sur": 1, "description": "Rejet de tout EID malformé"}
+    ]},
+    {"id": "code", "titre": "Qualité du code de production", "criteres": [
+      {"id": "code-propre", "titre": "Code propre et lisible", "sur": 1, "description": "Nommage clair, absence de code mort ou redondant"},
+      {"id": "code-simple", "titre": "Absence de sur-ingénierie", "sur": 1, "description": "Pas de complexité inutile ; le code répond exactement aux tests"},
+      {"id": "code-refactoring", "titre": "Refactoring visible", "sur": 1, "description": "Au moins une passe de refactoring documentée (commit, commentaire ou historique)"}
+    ]}
+  ],
+  "bonus": [
+    {"id": "retro", "titre": "RETRO.md sincère et pertinent", "sur": 1, "description": "Le fichier RETRO.md est rendu et démontre une réflexion sincère et pertinente, concrète et ancrée dans la session vécue."}
+  ]
+}

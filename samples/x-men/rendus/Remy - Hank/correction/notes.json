@@ -1,0 +1,197 @@
+{
+  "etudiant": "Remy & Hank",
+  "rendu": "rendus/Remy - Hank",
+  "date": "20 novembre 2026",
+  "correcteur": "Professeur Xavier",
+  "verdict": "Un rendu complet et juste : toutes les règles sont correctes, les tests visent les bornes, et la seule réserve porte sur le format des préfixes de commit.",
+  "synthese": "Le binôme a écrit sa liste de tests avant de coder et l'a suivie en 25 commits, avec une étape refactor explicite (« BLUE ») ou explicitement écartée (« pas de refacto »). L'implémentation finale découpe une méthode par règle et la clé de contrôle est juste. Les tests couvrent les bornes utiles : sexe 0 et 4, clés 97 et 01, série 000, longueurs 7 et 10, <code>null</code> et vide. Pitest a été lancé pour vérifier les tests. Les préfixes de commit ne suivent pas le format <code>red:</code> / <code>green:</code> / <code>refactor:</code> demandé, et l'historique contient un doublon suivi d'un revert. Correction par lecture du code, sans exécution des tests.",
+  "notes": {
+    "tdd-cycle": {
+      "note": 2.5,
+      "justification": "Chaque test numéroté suit RED → GREEN, avec un refactoring (<code>54d69a2</code>, <code>528a848</code>, <code>bebce2f</code>) ou la mention « pas de refacto ». Les commits <code>418ca62</code> / <code>9d23678</code> fusionnent GREEN et BLUE, puis sont annulés par <code>722d8a8</code>.",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "La décision de ne pas refactorer est rendue explicite dans les messages."
+        },
+        {
+          "niveau": "warning",
+          "texte": "Un doublon et un revert brouillent la lecture du test 3."
+        }
+      ]
+    },
+    "tdd-test-first": {
+      "note": 2,
+      "justification": "Les commits RED précèdent systématiquement le code (tests 1 à 7) ; aucune règle n'apparaît sans test rouge.",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "Test d'abord sur toutes les règles."
+        }
+      ]
+    },
+    "tdd-baby-steps": {
+      "note": 1.5,
+      "justification": "25 commits entre 10h40 et 12h15, de 2 à 10 minutes. Les préfixes sont « Test 3 : RED », « BLUE (Refacto) » et non <code>red:</code> / <code>green:</code> / <code>refactor:</code> comme demandé.",
+      "constats": [
+        {
+          "niveau": "warning",
+          "texte": "Format de préfixe imposé par la consigne non respecté."
+        }
+      ]
+    },
+    "tdd-canon": {
+      "note": 1,
+      "justification": "Liste de tests écrite en amont (rétro), triangulation de la clé par cinq exemples valides dont les bornes 97 et 01, vérification par mutation testing.",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "Canon TDD appliqué et cité dans la rétro."
+        }
+      ]
+    },
+    "tests-nominaux": {
+      "note": 2,
+      "justification": "Cinq EID valides couvrent les trois sexes, une série à 999 et les clés extrêmes 97 (<code>10000797</code>) et 01 (<code>10000601</code>) (<code>EidTest.java:48</code>).",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "Bornes valides choisies avec soin."
+        }
+      ]
+    },
+    "tests-limites": {
+      "note": 2,
+      "justification": "<code>null</code>, vide, 7 et 10 caractères, lettre, signe moins, sexe 0 et 4, série 000 et clé fausse sont testés (<code>EidTest.java:15-24, 27, 58, 68</code>).",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "Chaque règle a son cas d'erreur."
+        }
+      ]
+    },
+    "tests-lisibilite": {
+      "note": 1,
+      "justification": "Noms en langage métier (<code>eid_with_serial_number_000_is_invalid</code>, <code>eid_with_wrong_control_key_is_invalid</code>), structure Act / Assert.",
+      "constats": [
+        {
+          "niveau": "warning",
+          "texte": "Les commentaires <code>//Act</code> <code>//Assert</code> répétés n'apportent plus d'information sur des tests d'une ligne."
+        }
+      ]
+    },
+    "regle-sexe": {
+      "note": 0.5,
+      "justification": "<code>hasValidSex</code> : caractère entre '1' et '3' (<code>Eid.java:19-22</code>).",
+      "constats": []
+    },
+    "regle-annee": {
+      "note": 0.5,
+      "justification": "Toute paire de chiffres est valide ; c'est garanti par <code>\\d{8}</code> (<code>Eid.java:15</code>).",
+      "constats": []
+    },
+    "regle-serie": {
+      "note": 0.5,
+      "justification": "<code>hasValidSerialNumber</code> refuse 000 (<code>Eid.java:25-27</code>).",
+      "constats": []
+    },
+    "regle-cle": {
+      "note": 1.5,
+      "justification": "<code>key == 97 - (number % 97)</code>, conforme à l'énoncé, valeurs de 01 à 97 (<code>Eid.java:30-34</code>).",
+      "extraits": [
+        {
+          "fichier": "src/main/java/com/coda/eid/Eid.java:6-11",
+          "code": "public static boolean isValid(String eid) {\n    return hasValidFormat(eid)\n            && hasValidSex(eid)\n            && hasValidSerialNumber(eid)\n            && hasValidControlKey(eid);\n}"
+        }
+      ],
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "Formule juste et testée aux deux bornes."
+        }
+      ]
+    },
+    "regle-structure": {
+      "note": 1,
+      "justification": "<code>null</code> et tout ce qui n'est pas exactement 8 chiffres sont rejetés en premier, ce qui protège les contrôles suivants.",
+      "constats": []
+    },
+    "code-propre": {
+      "note": 1,
+      "justification": "Une méthode par règle au nom explicite, constante <code>MODULO_KEY</code>. Petits écarts : <code>hasValidSerialNumber</code> est <code>public</code> sans raison, et <code>target/</code> et <code>.idea/</code> sont versionnés.",
+      "constats": [
+        {
+          "niveau": "warning",
+          "texte": "Rendre <code>hasValidSerialNumber</code> privée comme les autres."
+        }
+      ]
+    },
+    "code-simple": {
+      "note": 1,
+      "justification": "Code minimal, directement guidé par les tests.",
+      "constats": []
+    },
+    "code-refactoring": {
+      "note": 1,
+      "justification": "Trois commits de refactoring dont <code>bebce2f</code> « Refacto + Commentaires ».",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "Refactoring visible et daté."
+        }
+      ]
+    }
+  },
+  "bonus": {
+    "retro": {
+      "note": 1,
+      "justification": "Retours concrets et vécus (liste de tests, tests paramétrés, découpage par règle, Pitest) et une action précise : fixer noms et conventions dès le départ.",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "Action d'amélioration concrète et liée à un problème rencontré."
+        }
+      ]
+    }
+  },
+  "points_forts": [
+    "Implémentation juste et lisible, une méthode par règle.",
+    "Tests ciblés sur les bornes (clés 01 et 97, sexes 0 et 4).",
+    "Liste de tests écrite avant de coder et mutation testing pour la valider."
+  ],
+  "axes": [
+    "Respecter le format de préfixes imposé (<code>red:</code>, <code>green:</code>, <code>refactor:</code>).",
+    "Éviter les commits doublons et les reverts : vérifier avant de commiter.",
+    "Ajouter un <code>.gitignore</code> pour <code>target/</code> et <code>.idea/</code>."
+  ],
+  "recommandations": [
+    {
+      "priorite": "warning",
+      "texte": "Adopter un modèle de message de commit dès le premier commit (<code>git commit -m \"red: …\"</code>)."
+    },
+    {
+      "priorite": "warning",
+      "texte": "Rendre privée <code>hasValidSerialNumber</code> et retirer les commentaires Act / Assert redondants."
+    },
+    {
+      "priorite": "warning",
+      "texte": "Commiter les tests d'acceptation ajoutés en fin de séance (actuellement seulement indexés)."
+    }
+  ],
+  "ia": {
+    "score": 1,
+    "justification": "Progression régulière avec hésitations humaines (doublon, revert, « 7 et 9 char ne passe pas »). Aucun indice d'usage IA.",
+    "indices": [
+      {
+        "titre": "Commits",
+        "niveau": "absent",
+        "texte": "Commits fins, messages en français familier, essais-erreurs visibles."
+      },
+      {
+        "titre": "Sur-documentation",
+        "niveau": "faible",
+        "texte": "Commentaires de positions sobres, ajoutés en fin de séance."
+      }
+    ]
+  }
+}

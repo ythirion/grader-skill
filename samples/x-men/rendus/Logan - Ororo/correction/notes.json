@@ -1,0 +1,212 @@
+{
+  "etudiant": "Logan & Ororo",
+  "rendu": "rendus/Logan - Ororo",
+  "date": "20 novembre 2026",
+  "correcteur": "Professeur Xavier",
+  "verdict": "Les règles métier sont presque toutes justes, mais le TDD s'arrête à l'alternance red / green : pas de refactoring et un grand saut qui implémente tout d'un coup.",
+  "synthese": "Le binôme alterne bien des commits <code>red</code> et <code>green</code> (12 commits en 1h45), mais le commit <code>0410bc7</code> « green : all tests ok » écrit d'un bloc les validations du sexe, de l'année, du numéro de série et de la clé. Aucune phase de refactoring n'apparaît. La clé de contrôle est correctement calculée. En revanche, le découpage de la chaîne est fait <em>avant</em> le contrôle de longueur : <code>null</code> ou une chaîne courte lèvent une exception au lieu de renvoyer <code>false</code>, et les espaces sont acceptés alors que l'énoncé ne le prévoit pas. Le code de production est rangé dans <code>src/test</code>. Correction par lecture du code, sans exécution des tests.",
+  "notes": {
+    "tdd-cycle": {
+      "note": 1,
+      "justification": "Les étapes red et green alternent, mais aucune étape refactor n'existe dans l'historique. Le commit <code>0410bc7</code> fait passer d'un coup toutes les règles, sans test rouge propre à chacune.",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "Alternance <code>red</code> / <code>green</code> visible sur les 11 commits après le premier."
+        },
+        {
+          "niveau": "critical",
+          "texte": "Aucun commit <code>refactor:</code> : le cycle est incomplet."
+        }
+      ]
+    },
+    "tdd-test-first": {
+      "note": 1,
+      "justification": "Les premiers tests précèdent bien le code. Mais <code>0410bc7</code> ajoute 4 règles en un seul commit vert, et <code>28a72d2</code> (« red ») modifie déjà le code de production.",
+      "extraits": [
+        {
+          "fichier": "git show 0410bc7 (extrait)",
+          "code": "-        if (potentailEID.equals(\"49800767\")) return false;\n+        if (potentailEID.length() != 8) return false;\n+        if (Integer.parseInt(tableau[0]) != 1 && ... ) return false;\n+        if (Integer.parseInt(tableau[1]+tableau[2])  < 0 || ...) return false;\n+        if (Integer.parseInt(tableau[3]+tableau[4]+tableau[5]) < 1 || ...) return  false;\n+        if (97 - sixFirstNumber%97 != key) return false;"
+        }
+      ],
+      "constats": [
+        {
+          "niveau": "warning",
+          "texte": "Code de production non couvert par un test rouge dédié (sexe, année, numéro de série écrits ensemble)."
+        }
+      ]
+    },
+    "tdd-baby-steps": {
+      "note": 1,
+      "justification": "Les préfixes sont présents et les commits courts après 12h. Le saut de 32 minutes entre <code>e60bd3e</code> et <code>0410bc7</code> casse la progression, et <code>14602b7</code> est préfixé <code>green</code> alors qu'il écrit un test rouge.",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "Préfixes <code>red :</code> / <code>green :</code> utilisés de façon systématique."
+        },
+        {
+          "niveau": "warning",
+          "texte": "Préfixe erroné sur <code>14602b7</code> (« green … erreur »)."
+        }
+      ]
+    },
+    "tdd-canon": {
+      "note": 0.5,
+      "justification": "On voit du « fake it » (<code>return true</code>, puis la valeur codée en dur <code>\"49800767\"</code>), mais la généralisation se fait d'un bloc, sans triangulation ni liste de tests visible.",
+      "constats": [
+        {
+          "niveau": "warning",
+          "texte": "Pas de liste de tests ni de triangulation sur la clé de contrôle."
+        }
+      ]
+    },
+    "tests-nominaux": {
+      "note": 1.5,
+      "justification": "Cinq EID valides couvrent les trois sexes et plusieurs années (<code>EIDTest.java:13-21</code>). Aucun cas ne vise les bornes valides (série 999, clé 97 ou 01).",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "Tests paramétrés avec <code>@MethodSource</code>."
+        }
+      ]
+    },
+    "tests-limites": {
+      "note": 1,
+      "justification": "Sexe 4, longueur 9, série 000, clé fausse, lettres et caractères spéciaux sont testés. Il manque <code>null</code>, la chaîne vide et une chaîne trop courte, précisément les cas qui font planter le code.",
+      "constats": [
+        {
+          "niveau": "critical",
+          "texte": "Le cas <code>null</code> du test d'acceptation fourni (<code>AcceptanceTests.java:13</code>) lève une <code>NullPointerException</code>."
+        }
+      ]
+    },
+    "tests-lisibilite": {
+      "note": 0.5,
+      "justification": "Deux tests génériques (<code>a_valid_eid_should_return_true</code>, <code>a_not_valid_eid_should_return_false</code>) sans libellé par cas : on ne sait pas quelle règle chaque donnée vérifie. Faute de frappe <code>potentailEID</code>.",
+      "constats": [
+        {
+          "niveau": "warning",
+          "texte": "Nommer chaque cas (<code>Named.of</code> ou un 2ᵉ argument comme dans <code>AcceptanceTests</code>)."
+        }
+      ]
+    },
+    "regle-sexe": {
+      "note": 0.5,
+      "justification": "Contrôle des valeurs 1, 2 et 3 (<code>EID.java:16</code>).",
+      "constats": []
+    },
+    "regle-annee": {
+      "note": 0.5,
+      "justification": "Contrôle 00 à 99 (<code>EID.java:17</code>), redondant avec le contrôle « chiffres uniquement » mais correct.",
+      "constats": []
+    },
+    "regle-serie": {
+      "note": 0.5,
+      "justification": "Numéro de série entre 1 et 999 (<code>EID.java:18</code>).",
+      "constats": []
+    },
+    "regle-cle": {
+      "note": 1.5,
+      "justification": "La clé est bien <code>97 - (6 premiers chiffres mod 97)</code> (<code>EID.java:19</code>), ce qui donne une valeur de 01 à 97.",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "Formule conforme à l'énoncé."
+        }
+      ]
+    },
+    "regle-structure": {
+      "note": 0.5,
+      "justification": "La longueur est contrôlée ligne 15, <em>après</em> l'accès à <code>tableau[7]</code> (lignes 10-13) : <code>\"123\"</code> lève une <code>ArrayIndexOutOfBoundsException</code>, <code>null</code> une <code>NullPointerException</code>. Les espaces sont retirés, donc <code>\"1 87 955 31\"</code> est accepté hors spécification.",
+      "extraits": [
+        {
+          "fichier": "src/test/java/com/ied/EID.java:5-15",
+          "code": "var sanitizeEID = potentailEID.replace(\" \",\"\");\nif (!sanitizeEID.matches(\"[0-9]+\")) return false;\nvar tableau = sanitizeEID.split(\"\");\nvar secondThirdNumbers = Integer.parseInt(tableau[1]+tableau[2]);\n// ...\nvar key = Integer.parseInt(tableau[6]+tableau[7]);\n\nif (sanitizeEID.length() != 8) return false;"
+        }
+      ],
+      "constats": [
+        {
+          "niveau": "critical",
+          "texte": "Exceptions au lieu de <code>false</code> sur une entrée malformée."
+        }
+      ]
+    },
+    "code-propre": {
+      "note": 0.5,
+      "justification": "Variables intermédiaires nommées, mais <code>split(\"\")</code> et concaténations de caractères à la place de <code>substring</code>, nom <code>tableau</code>, et classe de production placée dans <code>src/test/java</code>. Le dossier <code>target/</code> est versionné.",
+      "constats": [
+        {
+          "niveau": "warning",
+          "texte": "Déplacer <code>EID.java</code> dans <code>src/main/java</code>."
+        }
+      ]
+    },
+    "code-simple": {
+      "note": 1,
+      "justification": "Une seule méthode statique, sans abstraction superflue.",
+      "constats": []
+    },
+    "code-refactoring": {
+      "note": 0,
+      "justification": "Aucun commit, commentaire ou trace de refactoring. Les variables extraites dans la version finale ne sont pas commitées (<code>git status</code> : <code>EID.java</code> modifié).",
+      "constats": [
+        {
+          "niveau": "critical",
+          "texte": "Aucune passe de refactoring documentée."
+        }
+      ]
+    }
+  },
+  "bonus": {
+    "retro": {
+      "note": 0,
+      "justification": "Le <code>RETRO.md</code> est rendu (non commité) mais tient en trois lignes générales (« le pair-programming », « réflexion plus approfondie ») sans action concrète.",
+      "constats": [
+        {
+          "niveau": "warning",
+          "texte": "Aucune action d'amélioration concrète proposée."
+        }
+      ]
+    }
+  },
+  "points_forts": [
+    "Clé de contrôle calculée correctement, avec la bonne formule.",
+    "Discipline des préfixes <code>red</code> / <code>green</code> tenue tout au long de la session.",
+    "Tests paramétrés qui rendent l'ajout de cas facile."
+  ],
+  "axes": [
+    "Ajouter l'étape refactor à chaque cycle et la commiter.",
+    "Écrire un test rouge par règle au lieu d'implémenter plusieurs règles d'un coup.",
+    "Traiter les entrées malformées (<code>null</code>, longueur) avant tout découpage."
+  ],
+  "recommandations": [
+    {
+      "priorite": "critical",
+      "texte": "Placer les contrôles <code>null</code> et longueur en tête de <code>isValid</code>, avec les tests correspondants."
+    },
+    {
+      "priorite": "warning",
+      "texte": "Écrire une liste de tests avant de coder et la cocher au fil des cycles."
+    },
+    {
+      "priorite": "warning",
+      "texte": "Commiter le travail final (RETRO, tests d'acceptation) et ignorer <code>target/</code> dans <code>.gitignore</code>."
+    }
+  ],
+  "ia": {
+    "score": 1,
+    "justification": "Code au niveau attendu pour une première session Java, avec ses maladresses (<code>split(\"\")</code>, faute de frappe, ordre des contrôles). Aucun indice d'usage IA.",
+    "indices": [
+      {
+        "titre": "Sophistication vs niveau",
+        "niveau": "absent",
+        "texte": "Code simple, cohérent avec la rétro (« comprendre le java »)."
+      },
+      {
+        "titre": "Commits",
+        "niveau": "faible",
+        "texte": "Un commit monolithique (<code>0410bc7</code>), plutôt lié au rythme qu'à un outil."
+      }
+    ]
+  }
+}

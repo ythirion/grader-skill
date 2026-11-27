@@ -1,0 +1,69 @@
+{
+  "sections": [
+    {
+      "id": "tdd",
+      "titre": "Pratique TDD",
+      "sur": 8,
+      "note": 7.0
+    },
+    {
+      "id": "tests",
+      "titre": "Qualité des tests",
+      "sur": 5,
+      "note": 5.0
+    },
+    {
+      "id": "regles",
+      "titre": "Implémentation des règles EID",
+      "sur": 4.0,
+      "note": 4.0
+    },
+    {
+      "id": "code",
+      "titre": "Qualité du code de production",
+      "sur": 3,
+      "note": 3.0
+    }
+  ],
+  "sur": 20,
+  "note": 19.0,
+  "bonus": 1.0,
+  "bonus_sur": 1.0,
+  "malus": 0.0,
+  "finale": 20.0,
+  "grade_base": 19.0,
+  "ia": {
+    "note": 19.0,
+    "bonus": 1.0,
+    "malus": 0.0,
+    "finale": 20.0,
+    "sections": [
+      {
+        "id": "tdd",
+        "titre": "Pratique TDD",
+        "sur": 8,
+        "note": 7.0
+      },
+      {
+        "id": "tests",
+        "titre": "Qualité des tests",
+        "sur": 5,
+        "note": 5.0
+      },
+      {
+        "id": "regles",
+        "titre": "Implémentation des règles EID",
+        "sur": 4.0,
+        "note": 4.0
+      },
+      {
+        "id": "code",
+        "titre": "Qualité du code de production",
+        "sur": 3,
+        "note": 3.0
+      }
+    ]
+  },
+  "ajustements": 0,
+  "correcteur": "Professeur Xavier"
+}

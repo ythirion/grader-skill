@@ -1,0 +1,209 @@
+{
+  "etudiant": "Scott, Jean & Kurt",
+  "rendu": "rendus/Scott - Jean - Kurt",
+  "date": "20 novembre 2026",
+  "correcteur": "Professeur Xavier",
+  "verdict": "Le meilleur historique TDD de la promo, mais la clé de contrôle commitée est fausse : un seul exemple valide, mal calculé, a guidé toute l'implémentation.",
+  "synthese": "32 commits réguliers (2 à 8 minutes), des préfixes <code>red</code> / <code>green</code> / <code>refactor</code> tenus, sept passes de refactoring et l'ajout de Pitest : la pratique est exemplaire. Le cœur métier ne l'est pas. Le seul EID valide testé, <code>12345673</code>, a une clé fausse (la bonne est 25), et le code implémente <code>reste % 97 + 1</code> au lieu de <code>97 - reste % 97</code> : un EID valide comme <code>19800767</code> est refusé. C'est le cas d'école du manque de triangulation. La correction porte sur le code commité (<code>HEAD</code>) : la copie de travail supprime ce code et ajoute trois implémentations individuelles non commitées, dont deux déclarées générées par IA. Correction par lecture du code, sans exécution des tests.",
+  "notes": {
+    "tdd-cycle": {
+      "note": 2.5,
+      "justification": "Chaque comportement suit red → green, et sept commits <code>refactor:</code> apparaissent (<code>a773a49</code>, <code>e2852ab</code>, <code>596a2c2</code>, <code>9f09dd2</code>…). Seul <code>1a369ff</code> « redgreenrefac » mélange les trois phases.",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "Cycle complet visible sur la quasi-totalité de l'historique."
+        }
+      ]
+    },
+    "tdd-test-first": {
+      "note": 2,
+      "justification": "Les commits <code>red</code> ne touchent que <code>EidTests.java</code>, les commits <code>green</code> que <code>Eid.java</code> : le test précède toujours le code.",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "Séparation stricte test / production commit par commit."
+        }
+      ]
+    },
+    "tdd-baby-steps": {
+      "note": 2,
+      "justification": "32 commits entre 10h39 et 12h28, chacun d'une seule intention, avec les préfixes demandés.",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "Rythme fin et régulier, préfixes conformes à la consigne."
+        }
+      ]
+    },
+    "tdd-canon": {
+      "note": 0.5,
+      "justification": "La rétro mentionne une liste de cas écrite sur papier, mais la clé n'a jamais été triangulée : un seul exemple valide, faux, a suffi à « valider » une formule erronée.",
+      "constats": [
+        {
+          "niveau": "critical",
+          "texte": "Absence de triangulation sur la clé de contrôle, à l'origine du bug principal."
+        }
+      ]
+    },
+    "tests-nominaux": {
+      "note": 0.5,
+      "justification": "Un seul cas nominal (<code>EidTests.java:19</code>) et sa clé est fausse : <code>123456 mod 97 = 72</code>, la clé attendue est <code>97 - 72 = 25</code>, pas 73.",
+      "extraits": [
+        {
+          "fichier": "java/src/test/java/coda/EidTests.java:17-20",
+          "code": "@Test\nvoid validEidShouldReturnTrue() {\n    assertTrue(Eid.isValid(\"12345673\"));\n}"
+        }
+      ],
+      "constats": [
+        {
+          "niveau": "critical",
+          "texte": "Le test nominal valide un EID invalide."
+        }
+      ]
+    },
+    "tests-limites": {
+      "note": 1.5,
+      "justification": "Liste riche : <code>null</code>, vide, trop court, trop long, lettres, sexe 4, série 000, clé hors plage et clé fausse (<code>EidTests.java:22-33</code>). Mais « key modulo invalid » est construit avec la même formule fausse.",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "<code>@NullAndEmptySource</code> et cas nommés."
+        }
+      ]
+    },
+    "tests-lisibilite": {
+      "note": 1,
+      "justification": "Chaque cas invalide est nommé avec <code>Named.of(\"invalid serial number\", …)</code> : le rapport de test dit quelle règle est vérifiée.",
+      "constats": [
+        {
+          "niveau": "warning",
+          "texte": "Imports inutiles (<code>jdk.dynalink.beans.StaticClass</code>, <code>assertThat</code>)."
+        }
+      ]
+    },
+    "regle-sexe": {
+      "note": 0.5,
+      "justification": "Expression <code>[1-3]</code> (<code>Eid.java:7</code>).",
+      "constats": []
+    },
+    "regle-annee": {
+      "note": 0.5,
+      "justification": "Expression <code>[0-9]{2}</code> (<code>Eid.java:8</code>).",
+      "constats": []
+    },
+    "regle-serie": {
+      "note": 0.5,
+      "justification": "<code>(?!000)[0-9]{3}</code> exclut 000 (<code>Eid.java:9</code>).",
+      "constats": []
+    },
+    "regle-cle": {
+      "note": 0,
+      "justification": "La formule <code>remainder % 97 + 1</code> n'est pas le complément à 97. Les EID valides de l'énoncé et des tests d'acceptation (<code>19800767</code>, <code>30600233</code>…) sont refusés.",
+      "extraits": [
+        {
+          "fichier": "java/src/main/java/coda/Eid.java:24-26 (HEAD)",
+          "code": "var key = Integer.parseInt(eid.substring(6));\nvar remainder = Integer.parseInt(eid.substring(0,6));\nreturn remainder % keyMax + keyMin == key;"
+        }
+      ],
+      "constats": [
+        {
+          "niveau": "critical",
+          "texte": "Clé de contrôle fausse : la règle centrale de l'EID n'est pas respectée."
+        }
+      ]
+    },
+    "regle-structure": {
+      "note": 0.5,
+      "justification": "<code>null</code> et la longueur sont gérés, mais l'expression n'est ancrée qu'en fin (<code>$</code>) et utilise <code>find()</code> : <code>\"a12345673\"</code> passe l'expression puis lève une <code>NumberFormatException</code> sur <code>parseInt(\"a12345\")</code>.",
+      "constats": [
+        {
+          "niveau": "warning",
+          "texte": "Ancrer avec <code>^…$</code> ou utiliser <code>matches()</code>."
+        }
+      ]
+    },
+    "code-propre": {
+      "note": 0.5,
+      "justification": "Expressions décomposées et commentées, constantes extraites. Nommage incohérent (constantes en camelCase, mi-<code>public</code> mi-<code>private</code>), commentaire faux « between 000-999 excluding 000 », <code>Pattern</code> recompilé à chaque appel, <code>target/</code> versionné.",
+      "constats": [
+        {
+          "niveau": "warning",
+          "texte": "Constantes en <code>UPPER_SNAKE_CASE</code> et <code>Pattern</code> en champ statique."
+        }
+      ]
+    },
+    "code-simple": {
+      "note": 1,
+      "justification": "Une classe, une méthode, une expression : rien de superflu.",
+      "constats": []
+    },
+    "code-refactoring": {
+      "note": 1,
+      "justification": "Sept commits <code>refactor:</code> dont « eliminate magic numbers », « Decomposed regex for readability » et « named tests ».",
+      "constats": [
+        {
+          "niveau": "ok",
+          "texte": "Refactoring régulier, sur le code comme sur les tests."
+        }
+      ]
+    }
+  },
+  "bonus": {
+    "retro": {
+      "note": 0.5,
+      "justification": "Les réussites sont concrètes et ancrées dans la session (parallélisation recherche / code, liste de cas sur papier, rotation en mob). La partie amélioration se limite à « rien » : pas d'action.",
+      "constats": [
+        {
+          "niveau": "warning",
+          "texte": "Aucune action d'amélioration, pourtant demandée explicitement."
+        }
+      ]
+    }
+  },
+  "points_forts": [
+    "Historique TDD exemplaire : petits pas, préfixes, refactoring à chaque étape.",
+    "Tests d'erreur nombreux et bien nommés.",
+    "Initiative du mutation testing avec Pitest."
+  ],
+  "axes": [
+    "Trianguler : au moins trois exemples valides calculés à la main avant de généraliser une formule.",
+    "Confronter ses exemples à ceux de l'énoncé (<code>19800767</code>).",
+    "Clarifier le rendu : la copie de travail supprime le code TDD au profit de versions non commitées."
+  ],
+  "recommandations": [
+    {
+      "priorite": "critical",
+      "texte": "Corriger la clé en <code>97 - reste % 97</code>, en commençant par un test rouge avec un EID de l'énoncé."
+    },
+    {
+      "priorite": "warning",
+      "texte": "Remplacer <code>find()</code> par <code>matches()</code> et tester une entrée préfixée par une lettre."
+    },
+    {
+      "priorite": "warning",
+      "texte": "Proposer au moins une action concrète dans la rétro, même quand tout s'est bien passé."
+    }
+  ],
+  "ia": {
+    "score": 3,
+    "justification": "Le code commité ne montre pas d'indice d'IA. La copie de travail, non commitée, contient deux classes annotées « AI Generated class / Chat GPT » et « Copilot in IDE », plus une troisième très documentée. Elles ne sont pas notées, mais méritent une question à l'oral.",
+    "indices": [
+      {
+        "titre": "Déclaration explicite",
+        "niveau": "fort",
+        "texte": "<code>coda/scott/ElfIdentifierValidator.java:3-5</code> et <code>coda/jean/EID.java:3</code> déclarent un usage de ChatGPT et Copilot (non commités)."
+      },
+      {
+        "titre": "Hétérogénéité de niveau",
+        "niveau": "modere",
+        "texte": "<code>coda/ororo/EID.java</code> (Optional, enum, records-like <code>equals</code>) tranche avec le code TDD commité."
+      },
+      {
+        "titre": "Code TDD commité",
+        "niveau": "absent",
+        "texte": "Progression lente, erreur de formule humaine et typique : aucun indice."
+      }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "commentaire": "Les trois groupes ont tous appliqué une forme de TDD avec des commits fréquents ; l'écart se joue sur le refactoring et sur la justesse de la clé de contrôle.",
+  "constats_communs": [
+    {"niveau": "ok", "texte": "Commits fréquents et préfixés dans les trois rendus : l'historique git permet de suivre le cycle TDD."},
+    {"niveau": "ok", "texte": "Tests paramétrés utilisés partout pour multiplier les cas à moindre coût."},
+    {"niveau": "critical", "texte": "La triangulation reste le point faible : un rendu valide une clé de contrôle fausse avec un seul exemple."},
+    {"niveau": "warning", "texte": "Les entrées malformées (<code>null</code>, longueur, caractère en tête) ne sont pas toujours traitées avant le découpage."},
+    {"niveau": "warning", "texte": "Hygiène du dépôt : <code>target/</code> ou <code>.idea/</code> versionnés et travail final non commité dans les trois rendus."},
+    {"niveau": "warning", "texte": "Le format de préfixe imposé (<code>red:</code> / <code>green:</code> / <code>refactor:</code>) n'est suivi à la lettre que par un groupe."}
+  ]
+}
